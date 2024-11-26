@@ -1,0 +1,102 @@
+submission-mgce-candra
+
+kasih akses ke projek reviewer_googlecloud@dicoding.com viewer
+
+buat bucket dicoding-submission-candra
+fine grained
+buat bucket role storage object viewer untuk allUsers
+masukkan 2 gambar
+lifecycle > add rule > delete object > age 30 > number viewer > 5
+
+ke menu sql pilih mysql buat mysql instance kasih nama money-tracker-db dengan password candra 123, versi 5.6 enterprise asia-southeast2, multi-zone, machine type 1vcpu paling rendah, hdd 10 gb.
+
+copy ip adddress  34.101.187.61
+
+masih di mysql instance add network public 0.0.0.0/0
+
+buka cli
+sudo apt-get update
+sudo apt-get install mysql-client
+mysql -h 34.101.187.61 -u root -p 
+candra123 
+create database money;
+show database;
+
+enable:
+could build api
+app engine admin api
+
+create app engine asia soueast 2 
+node.js standard
+
+git clone -b money-tracker https://github.com/dicodingacademy/a133-gcp-labs.git money-tracker
+
+buka cli lagi
+buat page baru 
+<<backend>> git clone -b money-tracker-api https://github.com/dicodingacademy/a133-gcp-labs.git money-tracker-api
+ls
+
+buka editor rename folder utamajadi backend
+buka terminall di editor cd backend
+npm start
+buka webnya berdarasakan port
+
+ubah app yml service jadi default lalu terminal baru gcloud app deploy sama klo error ganti node js 18
+SAVE lalu deploy lagi klo error deploy lagi
+gcloud app browser
+delete folder www sama app.yaml yang bawah
+buat terminal baru npm start run
+cd backend> npm start > gcloud app deploy
+
+add service account di IAM pake email yang ada dibawah 2
+role storage object admin  
+trus manage key service yg udah dibuat tadi > add new key create aja
+
+buka file service account key di editor ganti semua isinya pake isi file key yang dibuat barusan trus save
+
+copy project id dan nama bucket masukkan di file imgUpload.js trus save
+
+ke menu SQL trus pilih instance db yang dibuat trus salin ip dan juga nama dbnyadan pw nya
+masukin ip ke file record.js dan pw nya
+
+balik ke app.yaml ganti service ke backend
+trus open terminal cd bacend
+mysql -h 34.101.187.61 root -p trus masukin password
+klo gabisa ganti pass 
+use <<namadatabase>>
+CREATE TABLE records (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    name VARCHAR(25) NOT NULL,
+    amount DOUBLE NOT NULL,
+    date DATETIME NOT NULL,
+    notes TEXT,
+    attachment VARCHAR(255)
+);
+exit
+
+gcloud app deploy
+
+split traffic di app engine > version atur aja setengahnya by random
+
+tambahin url backend yang dah jadi tadi ke record_model.php
+
+buka terminal baru
+cd frontend
+npm start
+gcloud app deploy
+klo error ganti php ke 81 di app.yaml frontend trus deploy lagi
+tambahin service: frontend  di app yaml trus deploy
+
+app.yaml:
+runtime: php81
+env: standard
+service: frontend
+
+handlers;
+- url: /.*
+  script: auto
+
+masukin link frontend yg dah jadi ke config.php
+trus deploy lagi
+
+deploy sekali lagi
